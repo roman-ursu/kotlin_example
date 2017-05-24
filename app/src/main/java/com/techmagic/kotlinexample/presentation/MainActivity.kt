@@ -4,10 +4,13 @@ import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
+import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
+import com.bumptech.glide.Glide
 import com.techmagic.kotlinexample.R
 import com.techmagic.kotlinexample.domain.pojo.WeatherDataDto
 import org.jetbrains.anko.find
@@ -51,37 +54,54 @@ class MainActivity : AppCompatActivity(), MainView {
         progressBar!!.visibility = View.VISIBLE
     }
 
-    override fun showData(weatherData: List<WeatherDataDto>?) {
+    override fun hideProgress() {
         forecastList!!.visibility = View.VISIBLE
         progressBar!!.visibility = View.GONE
-
-        forecastList!!.layoutManager = LinearLayoutManager(this)
-
-        val items: List<String>? = weatherData?.map { (temperature, humidity, description) -> "$description $humidity $temperature" }
-        if (items != null) {
-            forecastList!!.adapter = ForecastListAdapter(items)
-        }
-
-        toast("data arrived")
     }
 
-    class ForecastListAdapter(val items: List<String>) : RecyclerView.Adapter<ForecastListAdapter.ViewHolder>() {
+    override fun showData(weatherData: List<WeatherDataDto>?) {
+        forecastList!!.layoutManager = LinearLayoutManager(this)
+
+        if (weatherData != null) {
+            forecastList!!.adapter = ForecastListAdapter(weatherData)
+        }
+    }
+
+    inner class ForecastListAdapter(val items: List<WeatherDataDto>) : RecyclerView.Adapter<ForecastListAdapter.ViewHolder>() {
 
         override fun onBindViewHolder(holder: ViewHolder?, position: Int) {
-            holder!!.textView.text = items[position]
+            var weatherDataDto : WeatherDataDto = items[position]
+            holder!!.temperature!!.text = weatherDataDto.temperature.toString()
+            holder.humidity!!.text = weatherDataDto.humidity.toString()
+            holder.description!!.text = weatherDataDto.description
+            holder.windSpeed!!.text = weatherDataDto.windSpeed.toString()
+
+            Glide.with(this@MainActivity).load(weatherDataDto.iconUrl).into(holder.icon)
         }
 
         override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): ViewHolder {
-            return ViewHolder(TextView(parent!!.context))
+            val view: View = LayoutInflater.from(parent!!.context).inflate(R.layout.item_forecastitem, parent, false)
+            return ViewHolder(view)
         }
 
         override fun getItemCount(): Int {
             return items.size
         }
 
+        inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+            var temperature: TextView? = null
+            var humidity: TextView? = null
+            var windSpeed: TextView? = null
+            var description: TextView? = null
+            var icon: ImageView? = null
 
-        class ViewHolder(val textView: TextView) : RecyclerView.ViewHolder(textView)
+            init {
+                temperature = view.find(R.id.tv_temperature)
+                humidity = view.find(R.id.tv_humidity)
+                windSpeed = view.find(R.id.tv_wind_speed)
+                description = view.find(R.id.tv_description)
+                icon = view.find(R.id.iv_weather_icon)
+            }
+        }
     }
-
-
 }

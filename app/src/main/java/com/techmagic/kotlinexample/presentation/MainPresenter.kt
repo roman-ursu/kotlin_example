@@ -29,11 +29,11 @@ class MainPresenter {
 
                     override fun onNext(weatherData: List<WeatherDataDto>?) {
                         if (weatherData != null) {
+                            view?.hideProgress()
                             view?.showData(weatherData)
                         }
                     }
                 })
-
     }
 
     fun setView(view: MainView?) {

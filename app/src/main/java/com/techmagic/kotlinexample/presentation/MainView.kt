@@ -8,6 +8,7 @@ import com.techmagic.kotlinexample.domain.pojo.WeatherDataDto
 
 interface MainView {
     fun showProgress()
+    fun hideProgress()
     fun showData(weatherData: List<WeatherDataDto>?)
     fun showError(message: String?)
 }
