@@ -40,7 +40,7 @@ public class WeatherAPIManager {
     }
 
     public Observable<List<WeatherDataDto>> getWeather() {
-        return weatherAPI.getWeather().map(new Func1<ForecastListEntity, List<WeatherDataDto>>() {
+        return weatherAPI.loadWeather().map(new Func1<ForecastListEntity, List<WeatherDataDto>>() {
 
             @Override
             public List<WeatherDataDto> call(ForecastListEntity forecastListEntity) {
