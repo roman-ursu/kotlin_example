@@ -67,20 +67,19 @@ class MainActivity : AppCompatActivity(), MainView {
         }
     }
 
-    inner class ForecastListAdapter(val items: List<WeatherDataDto>) : RecyclerView.Adapter<ForecastListAdapter.ViewHolder>() {
-
-        override fun onBindViewHolder(holder: ViewHolder?, position: Int) {
+    inner class ForecastListAdapter(private val items: List<WeatherDataDto>) : RecyclerView.Adapter<ForecastListAdapter.ViewHolder>() {
+        override fun onBindViewHolder(holder: ViewHolder, position: Int) {
             var weatherDataDto : WeatherDataDto = items[position]
-            holder!!.temperature!!.text = weatherDataDto.temperature.toString()
+            holder.temperature!!.text = weatherDataDto.temperature.toString()
             holder.humidity!!.text = weatherDataDto.humidity.toString()
             holder.description!!.text = weatherDataDto.description
             holder.windSpeed!!.text = weatherDataDto.windSpeed.toString()
 
-            Glide.with(this@MainActivity).load(weatherDataDto.iconUrl).into(holder.icon)
+            Glide.with(this@MainActivity).load(weatherDataDto.iconUrl).into(holder.icon!!)
         }
 
-        override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): ViewHolder {
-            val view: View = LayoutInflater.from(parent!!.context).inflate(R.layout.item_forecastitem, parent, false)
+        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+            val view: View = LayoutInflater.from(parent.context).inflate(R.layout.item_forecastitem, parent, false)
             return ViewHolder(view)
         }
 
